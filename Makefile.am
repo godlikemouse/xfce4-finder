@@ -1,0 +1,10 @@
+AUTOMAKE_OPTIONS = subdir-objects foreign
+ACLOCAL_AMFLAGS = $(ACLOCAL_FLAGS)
+
+bin_PROGRAMS = xfce4_finder
+xfce4_finder_CPPFLAGS = $(GTKMM_CFLAGS) $(XFCONF_CFLAGS) $(GARCON_CFLAGS) $(LIBXFCE4UTIL_CFLAGS) $(LIBXFCE4UI_CFLAGS) $(GLIB_CFLAGS) $(GIO_CFLAGS)
+xfce4_finder_LDADD = $(GTKMM_LIBS) $(XFCONF_LIBS) $(GARCON_LIBS) $(LIBXFCE4UTIL_LIBS) $(LIBXFCE4_LIBS) $(GLIB_LIBS) $(GIO_LIBS)
+xfce4_finder_SOURCES = config.h \
+src/custom-css.h \
+src/xfce4-finder.cc
+

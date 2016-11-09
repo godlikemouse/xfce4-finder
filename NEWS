@@ -1,0 +1,8 @@
+0.1.0
+=====
+- First initial release with full theme and customization support.
+- Current support for settings requires using xfconf-query
+	- /application-directories - defaults to "/usr/share/applications", "~/local/share/applications"
+	- /file-extension - defaults to ".desktop"
+	- /web-search - defaults to "http://www.google.com/#safe=on&q=%s"
+	- /theme - defaults to "default"
