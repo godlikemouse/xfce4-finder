@@ -26,6 +26,8 @@
 #include <garcon/garcon.h>
 #include <xfconf/xfconf.h>
 
+#include "glade.h"
+#include "default-css.h"
 #include "custom-css.h"
 
 Glib::RefPtr<Gtk::Builder> p_builder;
@@ -131,7 +133,6 @@ inline void load_channel_settings(){
             iter < default_directories.end();
             ++iter){
 
-            //TODO: verify no memory leaks
             GValue * p_value = new GValue();
             *p_value = G_VALUE_INIT;
             g_value_init(p_value, G_TYPE_STRING);
@@ -182,12 +183,12 @@ inline void load_channel_settings(){
 }
 
 //method for replacing all occurances of a string
-inline Glib::ustring replace_all(const Glib::ustring& haystack, const Glib::ustring& search, const Glib::ustring& replace) {
+inline Glib::ustring replace_all(const Glib::ustring& haystack, const Glib::ustring& needle, const Glib::ustring& replace) {
 
     Glib::ustring str = haystack;
     Glib::ustring::size_type pos;
-    while( (pos = str.find(search, 0)) != Glib::ustring::npos ){
-        str = str.replace(pos, search.size(), replace);
+    while( (pos = str.find(needle, 0)) != Glib::ustring::npos ){
+        str = str.replace(pos, needle.size(), replace);
     }
 
     return str;
@@ -276,9 +277,6 @@ inline SearchEntryType get_search_entry_type(const Glib::ustring& text){
         return search_type;
     }
 
-    //TODO: Add custom checks to settings
-    //TODO: move below into single regex
-
     //detect web url
     //if text doesn't have any spaces and it contains at least one period
     search_type.text = trim(search_type.text);
@@ -288,7 +286,6 @@ inline SearchEntryType get_search_entry_type(const Glib::ustring& text){
         search_type.is_url = true;
     }
 
-    //TODO: move below into single regex
     if(search_type.is_url){
         if(search_type.text.find("ftp.") == 0)
             search_type.text = "ftp://" + search_type.text;
@@ -396,9 +393,19 @@ inline bool file_exists(const Glib::ustring filename) {
     if (FILE *file = fopen(filename.data(), "r")) {
         fclose(file);
         return true;
-    } else {
-        return false;
     }
+
+    return false;
+}
+
+inline bool write_file(const Glib::ustring filename, const Glib::ustring contents){
+    if(FILE *file = fopen(filename.data(), "w")) {
+        fputs(contents.data(), file);
+        fclose(file);
+        return true;
+    }
+
+    return false;
 }
 
 //method for creating an ExecSpec from an exec command string
@@ -571,7 +578,7 @@ inline Glib::ustring auto_tab(const Glib::ustring& location){
 void on_search_text_icon_press(Gtk::EntryIconPosition icon_position, const GdkEventButton* button){
 
     if(icon_position == Gtk::ENTRY_ICON_SECONDARY){
-        //TODO: launch settings dialog
+
     }
 }
 
@@ -589,8 +596,6 @@ void on_parsing_error(const Glib::RefPtr<const Gtk::CssSection>& section, const 
 
 //method for handling on tree selection change events
 void on_tree_selection_changed(){
-    //TODO: find a better way to do this. Hopefully like an on selection changed event.
-
     display_selection_details();
 }
 
@@ -757,7 +762,6 @@ bool on_search_arguments_key_press(const GdkEventKey * key_event){
 //handle main window keypress events
 bool on_search_text_key_press(const GdkEventKey * key_event){
 
-    //TODO: map to constants
     const int ENTER_KEY = 65293;
     const int TAB_KEY = 65289;
     const int ESC_KEY = 65307;
@@ -926,7 +930,6 @@ void on_search_text_change(){
                     continue;
                 }
 
-                //TODO: investigate feasibility of desktop actions
                 //Glib::ArrayHandle<Glib::ustring> groups = file.get_groups();
 
                 Glib::ustring group_name("Desktop Entry");
@@ -1081,7 +1084,6 @@ void on_search_text_change(){
         p_search_text->set_icon_from_pixbuf(icon, Gtk::ENTRY_ICON_PRIMARY);
     }
     else if(search_type.is_url || search_type.is_search){
-        //TODO: see if the default browser icon can be displayed instead
         Glib::RefPtr<Gdk::Pixbuf> icon = get_theme_icon("web-browser");
         p_search_text->set_icon_from_pixbuf(icon, Gtk::ENTRY_ICON_PRIMARY);
     }
@@ -1099,9 +1101,39 @@ void on_search_text_change(){
     }
 }
 
+void apply_css(const Glib::ustring css_file){
+    Glib::RefPtr<Gtk::CssProvider> p_css_provider = Gtk::CssProvider::create();
+    Glib::RefPtr<Gtk::StyleContext> p_style_context = Gtk::StyleContext::create();
+    p_css_provider->signal_parsing_error().connect( sigc::ptr_fun(&on_parsing_error) );
+
+    if(p_css_provider->load_from_path(css_file)){
+        Glib::RefPtr<Gdk::Screen> screen = p_main_window->get_screen();
+        p_style_context->add_provider_for_screen(screen, p_css_provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+    }
+}
+
+void display_help(){
+    std::cout << std::endl;
+    std::cout << PACKAGE_STRING << std::endl;
+    std::cout << std::endl;
+    std::cout << "Usage:" << std::endl;
+    std::cout << "  " << PACKAGE_NAME << " [OPTION...]" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Help Options:" << std::endl;
+    std::cout << "  -h, --help\t\tShow help options" << std::endl;
+    std::cout << std::endl;
+}
+
 int main(int argc, char ** argv){
 
-    //TODO: add internationalization
+    //iterate command line args
+    for(int i=0; i<argc; i++){
+        if(strcmp(argv[i], "--help") == 0){
+            display_help();
+            return 0;
+        }
+    }
+
     //xfce_textdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR, "UTF-8");
 
     garcon_set_environment_xdg(GARCON_ENVIRONMENT_XFCE);
@@ -1120,7 +1152,8 @@ int main(int argc, char ** argv){
 
     //load glade file
 	try{
-		p_builder->add_from_file("/usr/src/xfce4-finder/glade/xfce4-finder.glade");
+		//p_builder->add_from_file("/usr/src/xfce4-finder/glade/xfce4-finder.glade");
+        p_builder->add_from_string(GLADE_XML);
 	}
 	catch(const Glib::FileError& ex){
 		std::cerr << "Glade FileError: " << ex.what() << std::endl;
@@ -1182,20 +1215,19 @@ int main(int argc, char ** argv){
     p_tree_selection->signal_changed().connect( sigc::ptr_fun(&on_tree_selection_changed) );
 
     //add css support
-    Glib::ustring css_file = HOME_DIRECTORY + "/.config/xfce4/finder/" + theme + ".css";
+    Glib::ustring finder_directory = HOME_DIRECTORY + "/.config/xfce4/finder/";
+    Glib::ustring css_file = finder_directory + theme + ".css";
     if(file_exists(css_file)){
-
-        Glib::RefPtr<Gtk::CssProvider> p_css_provider = Gtk::CssProvider::create();
-        Glib::RefPtr<Gtk::StyleContext> p_style_context = Gtk::StyleContext::create();
-        p_css_provider->signal_parsing_error().connect( sigc::ptr_fun(&on_parsing_error) );
-
-        if(p_css_provider->load_from_path(css_file)){
-            Glib::RefPtr<Gdk::Screen> screen = p_main_window->get_screen();
-            p_style_context->add_provider_for_screen(screen, p_css_provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
-        }
+        apply_css(css_file);
     }
     else {
-        //TODO: install default CSS
+        //install default CSS
+        if(!file_exists(finder_directory)){
+            mkdir(finder_directory.data(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+        }
+
+        write_file(css_file, DEFAULT_CSS);
+        apply_css(css_file);
     }
 
     //use custom css
@@ -1211,8 +1243,6 @@ int main(int argc, char ** argv){
 	p_application->run(*p_main_window);
 
     xfconf_shutdown();
-
-    //TODO: verify valgrind testing for memory leaks
 
 	return EXIT_SUCCESS;
 }
