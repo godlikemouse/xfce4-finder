@@ -1,0 +1,11 @@
+#!/bin/sh
+
+echo "#ifndef __GLADE_H" > src/glade.h
+echo "#define __GLADE_H" >> src/glade.h
+echo "#include <glib.h>" >> src/glade.h
+echo >> src/glade.h
+echo -n "const Glib::ustring GLADE_XML(\"" >> src/glade.h
+head -c -1 -q glade/xfce4-finder.glade | sed 's/\"/\\"/gm' | sed ':a;N;$!ba;s/\n//g' >> src/glade.h
+echo -n "\");" >> src/glade.h
+echo >> src/glade.h
+echo "#endif" >> src/glade.h
