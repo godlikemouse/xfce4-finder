@@ -5,4 +5,3 @@
 - Implement key press constants instead of inline const.
 - Investigate integration of desktop file actions.
 - Investigate implementing default browser icon instead of default web icon.
-- Implement better icon display for search text and application arguments.

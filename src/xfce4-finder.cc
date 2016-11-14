@@ -36,8 +36,10 @@ Glib::RefPtr<Gtk::ListStore> p_list_store;
 Gtk::Overlay*  p_autocomplete_overlay = nullptr;
 Gtk::Window * p_main_window = nullptr;
 Gtk::Entry * p_search_text = nullptr;
+Gtk::Image * p_search_icon = nullptr;
 Gtk::TreeView * p_autocomplete = nullptr;
 Gtk::Button * p_search_application = nullptr;
+Gtk::Image * p_search_arguments_icon = nullptr;
 Gtk::Entry * p_search_arguments = nullptr;
 Gtk::Box * p_arguments_layout = nullptr;
 std::vector<Glib::ustring> directories;
@@ -461,7 +463,9 @@ inline void display_selection_details(){
 
     if(row){
         SearchEntry search_entry = row[autocomplete_columns.data];
-        p_search_text->set_icon_from_pixbuf(row[autocomplete_columns.icon], Gtk::ENTRY_ICON_PRIMARY);
+        //p_search_text->set_icon_from_pixbuf(row[autocomplete_columns.icon], Gtk::ENTRY_ICON_PRIMARY);
+        p_search_icon->set(row[autocomplete_columns.icon]);
+        p_search_arguments_icon->set(row[autocomplete_columns.icon]);
     }
 }
 
@@ -715,6 +719,7 @@ void on_row_activated(const Gtk::TreePath& tree_path, Gtk::TreeViewColumn * colu
 //handle search application button clicks
 void on_search_application_clicked(){
     p_search_arguments->set_text("");
+    p_search_icon->show();
     p_search_text->show();
     p_arguments_layout->hide();
     p_search_text->grab_focus_without_selecting();
@@ -804,6 +809,7 @@ bool on_search_text_key_press(const GdkEventKey * key_event){
             p_search_text->set_text(search_entry.name);
             p_search_text->set_position(search_entry.name.size());
 
+            p_search_icon->hide();
             p_search_text->hide();
             p_arguments_layout->show();
 
@@ -1081,23 +1087,33 @@ void on_search_text_change(){
 
     if(search_type.is_ftp){
         Glib::RefPtr<Gdk::Pixbuf> icon = get_theme_icon("folder-remote");
-        p_search_text->set_icon_from_pixbuf(icon, Gtk::ENTRY_ICON_PRIMARY);
+        //p_search_text->set_icon_from_pixbuf(icon, Gtk::ENTRY_ICON_PRIMARY);
+        p_search_icon->set(icon);
+        p_search_arguments_icon->set(icon);
     }
     else if(search_type.is_url || search_type.is_search){
         Glib::RefPtr<Gdk::Pixbuf> icon = get_theme_icon("web-browser");
-        p_search_text->set_icon_from_pixbuf(icon, Gtk::ENTRY_ICON_PRIMARY);
+        //p_search_text->set_icon_from_pixbuf(icon, Gtk::ENTRY_ICON_PRIMARY);
+        p_search_icon->set(icon);
+        p_search_arguments_icon->set(icon);
     }
     else if(search_type.is_command){
         Glib::RefPtr<Gdk::Pixbuf> icon = get_theme_icon("applications-other");
-        p_search_text->set_icon_from_pixbuf(icon, Gtk::ENTRY_ICON_PRIMARY);
+        //p_search_text->set_icon_from_pixbuf(icon, Gtk::ENTRY_ICON_PRIMARY);
+        p_search_icon->set(icon);
+        p_search_arguments_icon->set(icon);
     }
     else if(search_type.is_file){
         Glib::RefPtr<Gdk::Pixbuf> icon = get_theme_icon("text-x-generic");
-        p_search_text->set_icon_from_pixbuf(icon, Gtk::ENTRY_ICON_PRIMARY);
+        //p_search_text->set_icon_from_pixbuf(icon, Gtk::ENTRY_ICON_PRIMARY);
+        p_search_icon->set(icon);
+        p_search_arguments_icon->set(icon);
     }
     else if(search_type.is_directory){
         Glib::RefPtr<Gdk::Pixbuf> icon = get_theme_icon("folder");
-        p_search_text->set_icon_from_pixbuf(icon, Gtk::ENTRY_ICON_PRIMARY);
+        //p_search_text->set_icon_from_pixbuf(icon, Gtk::ENTRY_ICON_PRIMARY);
+        p_search_icon->set(icon);
+        p_search_arguments_icon->set(icon);
     }
 }
 
@@ -1150,9 +1166,8 @@ int main(int argc, char ** argv){
     //create builder reference for glade
 	p_builder = Gtk::Builder::create();
 
-    //load glade file
+    //load glade
 	try{
-		//p_builder->add_from_file("/usr/src/xfce4-finder/glade/xfce4-finder.glade");
         p_builder->add_from_string(GLADE_XML);
 	}
 	catch(const Glib::FileError& ex){
@@ -1177,6 +1192,10 @@ int main(int argc, char ** argv){
     p_search_text->signal_key_press_event().connect( sigc::ptr_fun(&on_search_text_key_press), false );
     p_search_text->signal_activate().connect( sigc::ptr_fun(&on_activate) );
     p_search_text->signal_icon_press().connect( sigc::ptr_fun(&on_search_text_icon_press) );
+
+    //retrieve pointer to search icon
+    p_builder->get_widget("SearchIcon", p_search_icon);
+    p_builder->get_widget("SearchArgumentsIcon", p_search_arguments_icon);
 
     //icon lookup
     try{

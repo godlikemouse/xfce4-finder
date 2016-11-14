@@ -5,11 +5,22 @@
 	-gtkmm__CustomObject_customcss-results: 10;
 }
 
+#search-icon {
+    padding-left: 10px;
+    padding-right: 10px;
+    background-image: -gtk-gradient(linear, left top, left bottom, from(#cfcfcf), to (#fff));
+	border: none;
+	border-bottom: solid 1px #afafaf;
+    transition: none;
+}
+
 #search-text {
     font-size: 25px;
     padding: 20px;
+	padding-left: 0;
 	border: none;
 	background-image: -gtk-gradient(linear, left top, left bottom, from(#cfcfcf), to (#fff));
+	border: none;
 	border-bottom: solid 1px #afafaf;
 	transition: none;
 	color: #333;
@@ -18,13 +29,26 @@
 #search-application {
 	font-size: 25px;
 	padding: 20px;
+	padding-left: 0;
+	background-image: -gtk-gradient(linear, left top, left bottom, from(#fff), to (#cfcfcf));
+	border: none;
 	border-bottom: solid 1px #afafaf;
+}
+
+#search-arguments-icon {
+	padding-left: 10px;
+	padding-right: 10px;
+	border: none;
+	border-bottom: solid 1px #afafaf;
+	transition: none;
+	background-image: -gtk-gradient(linear, left top, left bottom, from(#fff), to (#cfcfcf));
 }
 
 #search-arguments {
 	font-size: 25px;
 	padding: 20px;
 	background-image: -gtk-gradient(linear, left top, left bottom, from(#cfcfcf), to (#fff));
+	border: none;
 	border-bottom: solid 1px #afafaf;
 	color: #333;
 }

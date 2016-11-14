@@ -20,12 +20,11 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkEntry" id="SearchText">
-                <property name="name">search-text</property>
+              <object class="GtkImage" id="SearchIcon">
+                <property name="name">search-icon</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="hexpand">True</property>
-                <property name="placeholder_text" translatable="yes">Search for an application...</property>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-discard</property>
                 <style>
                   <class name="flat"/>
                 </style>
@@ -37,19 +36,33 @@
               </packing>
             </child>
             <child>
+              <object class="GtkEntry" id="SearchText">
+                <property name="name">search-text</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="hexpand">True</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">False</property>
+                <property name="placeholder_text" translatable="yes">Search for an application...</property>
+                <style>
+                  <class name="flat"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkBox" id="ArgumentsLayout">
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkButton" id="SearchApplication">
-                    <property name="name">search-application</property>
+                  <object class="GtkImage" id="SearchArgumentsIcon">
+                    <property name="name">search-arguments-icon</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="focus_on_click">False</property>
-                    <property name="receives_default">True</property>
-                    <property name="always_show_image">True</property>
-                    <child>
-                      <placeholder/>
-                    </child>
+                    <property name="can_focus">False</property>
+                    <property name="stock">gtk-discard</property>
                     <style>
                       <class name="flat"/>
                     </style>
@@ -58,6 +71,25 @@
                     <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="SearchApplication">
+                    <property name="name">search-application</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="focus_on_click">False</property>
+                    <property name="receives_default">True</property>
+                    <property name="relief">none</property>
+                    <property name="always_show_image">True</property>
+                    <style>
+                      <class name="flat"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
@@ -73,14 +105,14 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">1</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">1</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
