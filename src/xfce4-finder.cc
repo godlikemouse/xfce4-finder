@@ -400,6 +400,7 @@ inline bool file_exists(const Glib::ustring filename) {
     return false;
 }
 
+//method for writing to a file
 inline bool write_file(const Glib::ustring filename, const Glib::ustring contents){
     if(FILE *file = fopen(filename.data(), "w")) {
         fputs(contents.data(), file);
@@ -459,11 +460,8 @@ inline void display_selection_details(){
     Glib::RefPtr<Gtk::TreeSelection> selection = p_autocomplete->get_selection();
     Gtk::TreeModel::Row row = *(selection->get_selected());
 
-    p_search_text->unset_icon(Gtk::ENTRY_ICON_PRIMARY);
-
     if(row){
         SearchEntry search_entry = row[autocomplete_columns.data];
-        //p_search_text->set_icon_from_pixbuf(row[autocomplete_columns.icon], Gtk::ENTRY_ICON_PRIMARY);
         p_search_icon->set(row[autocomplete_columns.icon]);
         p_search_arguments_icon->set(row[autocomplete_columns.icon]);
     }
@@ -574,6 +572,7 @@ inline Glib::ustring auto_tab(const Glib::ustring& location){
     return complete;
 }
 
+//method for setting the search icon
 inline void set_icon(const Glib::RefPtr<Gdk::Pixbuf>& icon){
     p_search_icon->set(icon);
     p_search_arguments_icon->set(icon);
@@ -1070,8 +1069,7 @@ void on_search_text_change(){
         p_autocomplete->set_cursor(Gtk::TreePath("0"));
     }
     else {
-        Glib::RefPtr<Gdk::Pixbuf> icon = get_theme_icon("discard");
-        set_icon(icon);
+        set_icon(get_theme_icon("discard"));
     }
 
     //show/hide if results found
@@ -1086,27 +1084,23 @@ void on_search_text_change(){
     SearchEntryType search_type = get_search_entry_type(p_search_text->get_text());
 
     if(search_type.is_ftp){
-        Glib::RefPtr<Gdk::Pixbuf> icon = get_theme_icon("folder-remote");
-        set_icon(icon);
+        set_icon(get_theme_icon("folder-remote"));
     }
     else if(search_type.is_url || search_type.is_search){
-        Glib::RefPtr<Gdk::Pixbuf> icon = get_theme_icon("web-browser");
-        set_icon(icon);
+        set_icon(get_theme_icon("web-browser"));
     }
     else if(search_type.is_command){
-        Glib::RefPtr<Gdk::Pixbuf> icon = get_theme_icon("applications-other");
-        set_icon(icon);
+        set_icon(get_theme_icon("applications-other"));
     }
     else if(search_type.is_file){
-        Glib::RefPtr<Gdk::Pixbuf> icon = get_theme_icon("text-x-generic");
-        set_icon(icon);
+        set_icon(get_theme_icon("text-x-generic"));
     }
     else if(search_type.is_directory){
-        Glib::RefPtr<Gdk::Pixbuf> icon = get_theme_icon("folder");
-        set_icon(icon);
+        set_icon(get_theme_icon("folder"));
     }
 }
 
+//method for applying a css file
 void apply_css(const Glib::ustring css_file){
     Glib::RefPtr<Gtk::CssProvider> p_css_provider = Gtk::CssProvider::create();
     Glib::RefPtr<Gtk::StyleContext> p_style_context = Gtk::StyleContext::create();
@@ -1118,6 +1112,7 @@ void apply_css(const Glib::ustring css_file){
     }
 }
 
+//method for displaying command line help
 void display_help(){
     std::cout << std::endl;
     std::cout << PACKAGE_STRING << std::endl;
@@ -1231,9 +1226,8 @@ int main(int argc, char ** argv){
     }
     else {
         //install default CSS
-        if(!file_exists(finder_directory)){
+        if(!file_exists(finder_directory))
             mkdir(finder_directory.data(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-        }
 
         write_file(css_file, DEFAULT_CSS);
         apply_css(css_file);
