@@ -574,6 +574,13 @@ inline Glib::ustring auto_tab(const Glib::ustring& location){
     return complete;
 }
 
+inline void set_icon(const Glib::RefPtr<Gdk::Pixbuf>& icon){
+    p_search_icon->set(icon);
+    p_search_arguments_icon->set(icon);
+}
+
+
+
 
 
 
@@ -814,17 +821,6 @@ bool on_search_text_key_press(const GdkEventKey * key_event){
             p_arguments_layout->show();
 
             p_search_application->set_label(search_entry.name);
-
-            /*
-            Gtk::Image icon(p_search_text->get_icon_pixbuf(Gtk::ENTRY_ICON_PRIMARY));
-            Glib::RefPtr<Gdk::Pixbuf> pb = p_search_text->get_icon_pixbuf(Gtk::ENTRY_ICON_PRIMARY);
-            Gtk::Image icon(pb);
-            icon.set_size_request(pb->get_width(), pb->get_height());
-
-            std::cout << "icon height: " << icon.get_height() << std::endl;
-            p_search_application->set_image(icon);
-            p_search_application->set_always_show_image(true);
-            */
 
             p_search_arguments->grab_focus();
         }
@@ -1073,6 +1069,10 @@ void on_search_text_change(){
 
         p_autocomplete->set_cursor(Gtk::TreePath("0"));
     }
+    else {
+        Glib::RefPtr<Gdk::Pixbuf> icon = get_theme_icon("discard");
+        set_icon(icon);
+    }
 
     //show/hide if results found
     if(matches.size()){
@@ -1087,33 +1087,23 @@ void on_search_text_change(){
 
     if(search_type.is_ftp){
         Glib::RefPtr<Gdk::Pixbuf> icon = get_theme_icon("folder-remote");
-        //p_search_text->set_icon_from_pixbuf(icon, Gtk::ENTRY_ICON_PRIMARY);
-        p_search_icon->set(icon);
-        p_search_arguments_icon->set(icon);
+        set_icon(icon);
     }
     else if(search_type.is_url || search_type.is_search){
         Glib::RefPtr<Gdk::Pixbuf> icon = get_theme_icon("web-browser");
-        //p_search_text->set_icon_from_pixbuf(icon, Gtk::ENTRY_ICON_PRIMARY);
-        p_search_icon->set(icon);
-        p_search_arguments_icon->set(icon);
+        set_icon(icon);
     }
     else if(search_type.is_command){
         Glib::RefPtr<Gdk::Pixbuf> icon = get_theme_icon("applications-other");
-        //p_search_text->set_icon_from_pixbuf(icon, Gtk::ENTRY_ICON_PRIMARY);
-        p_search_icon->set(icon);
-        p_search_arguments_icon->set(icon);
+        set_icon(icon);
     }
     else if(search_type.is_file){
         Glib::RefPtr<Gdk::Pixbuf> icon = get_theme_icon("text-x-generic");
-        //p_search_text->set_icon_from_pixbuf(icon, Gtk::ENTRY_ICON_PRIMARY);
-        p_search_icon->set(icon);
-        p_search_arguments_icon->set(icon);
+        set_icon(icon);
     }
     else if(search_type.is_directory){
         Glib::RefPtr<Gdk::Pixbuf> icon = get_theme_icon("folder");
-        //p_search_text->set_icon_from_pixbuf(icon, Gtk::ENTRY_ICON_PRIMARY);
-        p_search_icon->set(icon);
-        p_search_arguments_icon->set(icon);
+        set_icon(icon);
     }
 }
 
@@ -1197,10 +1187,10 @@ int main(int argc, char ** argv){
     p_builder->get_widget("SearchIcon", p_search_icon);
     p_builder->get_widget("SearchArgumentsIcon", p_search_arguments_icon);
 
-    //icon lookup
+    //settings icon lookup
     try{
-        Glib::RefPtr<Gdk::Pixbuf> icon = get_theme_icon("applications-system");
-        p_search_text->set_icon_from_pixbuf(icon, Gtk::ENTRY_ICON_SECONDARY);
+        //Glib::RefPtr<Gdk::Pixbuf> icon = get_theme_icon("applications-system");
+        //p_search_text->set_icon_from_pixbuf(icon, Gtk::ENTRY_ICON_SECONDARY);
     }
     catch(Glib::Error& ex){}
 

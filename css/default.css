@@ -1,8 +1,8 @@
 * {
 	border-radius: 0;
-	-gtkmm__CustomObject_customcss-width: 1000;
-	-gtkmm__CustomObject_customcss-height: 400;
-	-gtkmm__CustomObject_customcss-results: 10;
+	-gtkmm__CustomObject_finder-width: 1000;
+	-gtkmm__CustomObject_finder-height: 370;
+	-gtkmm__CustomObject_finder-results: 10;
 }
 
 #search-icon {
