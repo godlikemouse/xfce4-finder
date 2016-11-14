@@ -17,6 +17,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <gtkmm.h>
+#include <gdk/gdkkeysyms.h>
 #include <dirent.h>
 #include <spawn.h>
 #include <glib/gi18n.h>
@@ -734,17 +735,13 @@ void on_search_application_clicked(){
 //handle search arcuments key press events
 bool on_search_arguments_key_press(const GdkEventKey * key_event){
 
-    const int ESC_KEY = 65307;
-    const int BACKSPACE_KEY = 65288;
-    const int TAB_KEY = 65289;
-
-    if(key_event->keyval == ESC_KEY){
+    if(key_event->keyval == GDK_KEY_Escape){
 
 		p_application->quit();
         return true;
 	}
 
-    if(key_event->keyval == TAB_KEY){
+    if(key_event->keyval == GDK_KEY_Tab){
 
         //perform auto complete on local directory and files
         Glib::ustring argumentsText = p_search_arguments->get_text();
@@ -761,7 +758,7 @@ bool on_search_arguments_key_press(const GdkEventKey * key_event){
     }
 
     //reverse application lock
-    if(key_event->keyval == BACKSPACE_KEY && p_search_arguments->get_position() == 0){
+    if(key_event->keyval == GDK_KEY_BackSpace && p_search_arguments->get_position() == 0){
 
         on_search_application_clicked();
         return true;
@@ -773,14 +770,8 @@ bool on_search_arguments_key_press(const GdkEventKey * key_event){
 //handle main window keypress events
 bool on_search_text_key_press(const GdkEventKey * key_event){
 
-    const int ENTER_KEY = 65293;
-    const int TAB_KEY = 65289;
-    const int ESC_KEY = 65307;
-    const int UP_KEY = 65362;
-    const int DOWN_KEY = 65364;
-
     //auto add www.<value>.com on control + enter
-    if(key_event->state & Gdk::CONTROL_MASK && key_event->keyval == ENTER_KEY){
+    if(key_event->state & Gdk::CONTROL_MASK && key_event->keyval == GDK_KEY_Return){
         Glib::ustring search_text = p_search_text->get_text();
         if(search_text.find("www.") == Glib::ustring::npos){
             p_search_text->set_text("www." + search_text);
@@ -792,7 +783,7 @@ bool on_search_text_key_press(const GdkEventKey * key_event){
         }
     }
 
-    if(key_event->keyval == TAB_KEY){
+    if(key_event->keyval == GDK_KEY_Tab){
 
         //perform auto complete on local directory and files
         Glib::ustring search_text = p_search_text->get_text();
@@ -828,13 +819,13 @@ bool on_search_text_key_press(const GdkEventKey * key_event){
 
     }
 
-	if(key_event->keyval == ESC_KEY){
+	if(key_event->keyval == GDK_KEY_Escape){
 
 		p_application->quit();
         return true;
 	}
 
-    if(key_event->keyval == UP_KEY){
+    if(key_event->keyval == GDK_KEY_Up){
 
         Glib::RefPtr<Gtk::TreeSelection> selection = p_autocomplete->get_selection();
         auto iter = selection->get_selected();
@@ -852,7 +843,7 @@ bool on_search_text_key_press(const GdkEventKey * key_event){
         selection->select(iter);
     }
 
-    if(key_event->keyval == DOWN_KEY){
+    if(key_event->keyval == GDK_KEY_Down){
 
         Glib::RefPtr<Gtk::TreeSelection> selection = p_autocomplete->get_selection();
         auto iter = selection->get_selected();
