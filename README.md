@@ -1,6 +1,8 @@
 # xfce4-finder
 Smart and intuitive application finder, complete with theme and customization support.
 
+![Screenshot](https://cloud.githubusercontent.com/assets/7003154/20498029/898f587a-aff9-11e6-85b1-8e27c5ff89ec.png)
+
 ## Key Features
 - Blazingly fast realtime application finding
 - Inline application argument launching using tab
