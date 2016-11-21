@@ -114,7 +114,6 @@ class AutocompleteColumns : public Gtk::TreeModel::ColumnRecord {
 const Glib::ustring HOME_DIRECTORY = getenv("HOME");
 const AutocompleteColumns autocomplete_columns;
 
-
 //method for loading configured channel settings and writing defaults
 inline void load_channel_settings(){
 
@@ -193,11 +192,24 @@ inline Glib::ustring replace_all(const Glib::ustring& haystack, const Glib::ustr
 
     Glib::ustring str = haystack;
     Glib::ustring::size_type pos;
-    while( (pos = str.find(needle, 0)) != Glib::ustring::npos ){
+    Glib::ustring::size_type offset = 0;
+    while( (pos = str.find(needle, offset)) != Glib::ustring::npos ){
+        offset = pos + replace.size();
         str = str.replace(pos, needle.size(), replace);
     }
 
     return str;
+}
+
+//method for beautifying the default css file
+inline Glib::ustring pretty_print_css(const Glib::ustring& content){
+
+    Glib::ustring c = content;
+    c = replace_all(c, "}", "}\n\n");
+    c = replace_all(c, "{", "{\n");
+    c = replace_all(c, ";", ";\n");
+
+    return c;
 }
 
 //method for splitting a string from a delimiter
@@ -1271,6 +1283,7 @@ int main(int argc, char ** argv){
     //add css support
     Glib::ustring finder_directory = HOME_DIRECTORY + "/.config/xfce4/finder/";
     Glib::ustring css_file = finder_directory + theme + ".css";
+
     if(file_exists(css_file)){
         apply_css(css_file);
     }
@@ -1279,7 +1292,7 @@ int main(int argc, char ** argv){
         if(!file_exists(finder_directory))
             mkdir(finder_directory.data(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
-        write_file(css_file, DEFAULT_CSS);
+        write_file(css_file, pretty_print_css(DEFAULT_CSS));
         apply_css(css_file);
     }
 

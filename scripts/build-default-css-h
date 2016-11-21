@@ -6,7 +6,7 @@ echo "#define __DEFAULT_CSS_H" >> $FILE
 echo "#include <glib.h>" >> $FILE
 echo >> $FILE
 echo -n "const Glib::ustring DEFAULT_CSS(\"" >> $FILE
-head -c -1 -q css/default.css | sed 's/\"/\\"/gm' | sed ':a;N;$!ba;s/\n/ \\\n/g' >> $FILE
+head -c -1 -q css/default.css | sed 's/\"/\\"/gm' | sed ':a;N;$!ba;s/\n/\\\n/g' >> $FILE
 echo -n "\");" >> $FILE
 echo >> $FILE
 echo "#endif" >> $FILE
