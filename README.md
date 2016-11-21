@@ -53,7 +53,19 @@ Open xfce4-keyboard-settings and bind a key combination to use for the xfce4-fin
 
 Once the application is displayed, begin typing.  Execute commands with either the ENTER_KEY or by mouse clicking a selection in the autocomplete list.
 
+## Command Arguments
 
+    xfce4-finder 1.0
+
+    Usage:
+      xfce4-finder [OPTION...]
+
+    Help Options:
+      -h, --help	        Show help options
+      -v, --verbose         Show verbose text
+
+## Features/Issues
+Feel free add feature requests or report issues: [Features/Issues](https://github.com/godlikemouse/xfce4-finder/issues).
 
 ## Community
 

@@ -1172,7 +1172,6 @@ int main(int argc, char ** argv){
     //get default web browser
     //use: xdg-settings get default-web-browser
     default_browser = passthru("xdg-settings get default-web-browser");
-    std::cout << "default browser: " << default_browser << "(" << default_browser.size() << ")" << std::endl;
 
     //iterate command line args
     for(int i=0; i<argc; i++){
