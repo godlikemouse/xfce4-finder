@@ -6,12 +6,12 @@ Smart and intuitive application finder, complete with theme and customization su
 ## Key Features
 - Blazingly fast realtime application finding
 - Inline application argument launching using tab
-    - Beging typing an application name, hit tab to lock it in, begin typing arguments to that application *(ie. Mail TAB someone@someplace.com ENTER)*.
+    - Beging typing an application name, hit TAB_KEY to lock it in, begin typing arguments to that application *(ie. Mail TAB_KEY someone@someplace.com ENTER_KEY)*.
 - Customizable UI and theme using CSS
 - Intuitive Web/Desktop Integration
     - Just begin typing, the application will determine whether or not an application should be launched or if the context requires an online web search.
 - Direct command invocation
-    - Utilize terminal command directly by typing the executable name *(ie. gedit ENTER)*.
+    - Utilize terminal command directly by typing the executable name *(ie. gedit ENTER_KEY)*.
 - Supports tab autocomplete for local application and filenames
 - Supports CONTROL_KEY + ENTER_KEY for domain name completion *(ie. google => www.google.com, google.com => www.google.com, www.google => www.google.com)*.
 
