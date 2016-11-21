@@ -48,6 +48,9 @@ Glib::ustring file_extension(".desktop");
 Glib::ustring web_search("https://www.google.com/#safe=on&q=%s");
 Glib::ustring theme("default");
 int results_limit;
+bool verbose = false;
+Glib::ustring default_browser;
+Glib::ustring default_browser_icon;
 
 struct SearchEntry {
     Glib::ustring filename;
@@ -231,14 +234,24 @@ inline Glib::ustring join(const std::vector<Glib::ustring>& value, const char de
 inline Glib::ustring ltrim(const Glib::ustring& s){
     Glib::ustring str = s;
 
+    bool done = false;
     for(auto iter = str.begin();
-        iter < str.end();
+        iter < str.end() && !done;
         ++iter){
 
-        if(*iter == ' ')
+        switch(*iter){
+            case 32: //space
+            case 10: //tab
             str.erase(iter);
-        else
             break;
+
+            case 0: //null
+            continue;
+
+            default:
+            done = true;
+            break;
+        }
     }
 
     return str;
@@ -248,14 +261,24 @@ inline Glib::ustring ltrim(const Glib::ustring& s){
 inline Glib::ustring rtrim(const Glib::ustring& s){
     Glib::ustring str = s;
 
+    bool done = false;
     for(auto iter = str.end();
-        iter > str.begin();
-        ++iter){
+        iter > str.begin() && !done;
+        --iter){
 
-        if(*iter == ' ')
+        switch(*iter){
+            case 32: //space
+            case 10: //tab
             str.erase(iter);
-        else
             break;
+
+            case 0: //null
+            continue;
+
+            default:
+            done = true;
+            break;
+        }
     }
 
     return str;
@@ -355,7 +378,8 @@ inline void launch_process(const Glib::ustring cmd, std::vector<Glib::ustring> a
     pid_t pid;
     char * argv[args.size() + 1];
 
-    std::cout << "Launching: " << cmd;
+    if(verbose)
+        std::cout << "Launching: " << cmd;
 
     //convert vector to const char * array
     int index = 0;
@@ -363,13 +387,16 @@ inline void launch_process(const Glib::ustring cmd, std::vector<Glib::ustring> a
         iter != args.end();
         ++iter){
 
-        if(index > 0)
+        if(index > 0 && verbose)
             std::cout << " " << *iter;
 
-        argv[index++] = const_cast<char*>((*iter).data());
+        if( (*iter).size() )
+            argv[index++] = const_cast<char*>((*iter).data());
     }
     argv[index] = NULL;
-    std::cout << std::endl;
+
+    if(verbose)
+        std::cout << std::endl;
 
     posix_spawn(&pid, cmd.data(), NULL, NULL, argv, environ);
 }
@@ -410,6 +437,19 @@ inline bool write_file(const Glib::ustring filename, const Glib::ustring content
     }
 
     return false;
+}
+
+//method for executing a command and retrieving the output
+Glib::ustring passthru(const Glib::ustring& cmd) {
+    char buffer[128];
+    Glib::ustring result = "";
+    std::shared_ptr<FILE> pipe(popen(cmd.data(), "r"), pclose);
+    if (!pipe) throw std::runtime_error("popen() failed!");
+    while (!feof(pipe.get())) {
+        if (fgets(buffer, 128, pipe.get()) != NULL)
+            result += buffer;
+    }
+    return trim(result);
 }
 
 //method for creating an ExecSpec from an exec command string
@@ -982,6 +1022,12 @@ void on_search_text_change(){
                     p_search_entry->icon = "applications-other";
                 }
 
+                if(default_browser.compare(trim(p_entry->d_name)) == 0){
+                    default_browser_icon = p_search_entry->icon;
+                    if(verbose)
+                        std::cout << "Default browser set to: " << p_search_entry->icon << std::endl;
+                }
+
                 //search name case insensitive
                 p_search_entry->position = p_search_entry->name.lowercase().find( search_text.lowercase() );
 
@@ -1078,7 +1124,10 @@ void on_search_text_change(){
         set_icon(get_theme_icon("folder-remote"));
     }
     else if(search_type.is_url || search_type.is_search){
-        set_icon(get_theme_icon("web-browser"));
+        if(default_browser_icon.size())
+            set_icon(get_theme_icon(default_browser_icon));
+        else
+            set_icon(get_theme_icon("web-browser"));
     }
     else if(search_type.is_command){
         set_icon(get_theme_icon("applications-other"));
@@ -1113,16 +1162,27 @@ void display_help(){
     std::cout << std::endl;
     std::cout << "Help Options:" << std::endl;
     std::cout << "  -h, --help\t\tShow help options" << std::endl;
+    std::cout << "  -v, --verbose\t\tShow verbose text" << std::endl;
     std::cout << std::endl;
 }
 
 int main(int argc, char ** argv){
 
+    trim("hello how are you? ");
+    //get default web browser
+    //use: xdg-settings get default-web-browser
+    default_browser = passthru("xdg-settings get default-web-browser");
+    std::cout << "default browser: " << default_browser << "(" << default_browser.size() << ")" << std::endl;
+
     //iterate command line args
     for(int i=0; i<argc; i++){
-        if(strcmp(argv[i], "--help") == 0){
+        if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0){
             display_help();
             return 0;
+        }
+
+        if(strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--verbose") == 0){
+            verbose = true;
         }
     }
 
@@ -1137,7 +1197,7 @@ int main(int argc, char ** argv){
     }
 
     //create application instance
-	p_application = Gtk::Application::create(argc, argv, "com.collaboradev.xfce4-finder");
+	p_application = Gtk::Application::create("com.collaboradev.xfce4-finder");
 
     //create builder reference for glade
 	p_builder = Gtk::Builder::create();

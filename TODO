@@ -2,4 +2,3 @@
 - Add user customizable regex support to get_search_entry_type actions.
 - Add settings dialog for customization to xfconf.
 - Investigate integration of desktop file actions.
-- Investigate implementing default browser icon instead of default web icon.
