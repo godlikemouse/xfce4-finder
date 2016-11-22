@@ -37,11 +37,23 @@ Change a setting:
     xfconf-query -c xfce4-finder -p /web-search -s https://www.bing.com?q=%s
 
 ## Building
-To build the application you will need to have Xfce development tools installed ([xfce4-dev-tools](http://www.xfce.org/)).
+To build the application you will need to have the following dependencies installed.
+- [Glib 2.0](https://developer.gnome.org/glib/)
+- [Gio 2.0](https://developer.gnome.org/gio/)
+- [Gtkmm 3.0](http://www.gtkmm.org/en/)
+- [Garcon](http://www.linuxfromscratch.org/blfs/view/svn/xfce/garcon.html)
+- [libxfconf](http://www.linuxfromscratch.org/blfs/view/systemd/xfce/xfconf.html)
+- [libxfce4util](http://www.linuxfromscratch.org/blfs/view/7.9/xfce/libxfce4util.html)
+- [libxfce4ui](http://www.linuxfromscratch.org/blfs/view/systemd/xfce/libxfce4ui.html)
+- [automake](https://www.gnu.org/software/automake/)
+- [autoconf](https://www.gnu.org/software/autoconf/autoconf.html)
+- [xfce4-dev-tools](http://www.xfce.org/)
 
 On Arch Linux:
 
-    sudo pacman -S xfce4-dev-tools
+    sudo pacman -S glib2 gtkmm garcon xfconf libxfce4util libxfce4ui automake autoconf xfce4-dev-tools
+
+
 
 Building the application:
 
