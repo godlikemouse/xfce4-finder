@@ -36,6 +36,11 @@ Change a setting:
 
     xfconf-query -c xfce4-finder -p /web-search -s https://www.bing.com?q=%s
 
+## Installation
+This application is available under the Arch Linux AUR repository as a [PKGBUILD](https://aur.archlinux.org/packages/xfce4-finder/).  To install using yaourt, use the following command:
+
+	yaourt xfce4-finder
+
 ## Building
 To build the application you will need to have the following dependencies installed.
 - [Glib 2.0](https://developer.gnome.org/glib/)
