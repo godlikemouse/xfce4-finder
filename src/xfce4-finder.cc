@@ -685,14 +685,24 @@ void on_activate(){
         return;
     }
 
+    if(verbose)
+        std::cout << "Activating: " << search_entry.exec << std::endl;
+
     ExecSpec spec = parse_exec_path(search_entry.exec);
     Glib::ustring search_text = p_search_text->get_text();
+
+    if(verbose)
+        std::cout << "Text: " << search_text << std::endl;
+
     SearchEntryType search_type = get_search_entry_type(search_text);
 
     //if not full execution path, find execution path and modify spec.cmd
     if(spec.cmd.at(0) != '/' &&
        spec.cmd.at(0) != '~' &&
        spec.cmd.at(0) != '.'){
+
+        if(verbose)
+            std::cout << "Relative execution found." << std::endl;
 
         std::vector<Glib::ustring> paths = split(getenv("PATH"), ':');
 
@@ -705,13 +715,22 @@ void on_activate(){
                 break;
             }
         }
+
+        if(verbose)
+            std::cout << "Absolute execution: " << spec.cmd << std::endl;
     }
     else {
+
+        if(verbose)
+            std::cout << "Absolute execution found." << std::endl;
 
         Glib::ustring location = trim(p_search_text->get_text());
 
         if(location.at(0) == '~')
             location = replace_all(location, "~", HOME_DIRECTORY);
+
+        if(verbose)
+            std::cout << "Using location: " << location << std::endl;
 
         if(search_type.is_directory){
             spec.args.clear();
@@ -731,6 +750,9 @@ void on_activate(){
 
     //verify executable
     if(!file_exists(spec.cmd) && !search_type.is_application){
+
+        if(verbose)
+            std::cout << "Executing web browser command." << std::endl;
 
         //web browser
         spec.args.clear();
@@ -752,14 +774,20 @@ void on_activate(){
         }
         else{
 
+            if(verbose)
+                std::cout << "Web browser search." << std::endl;
+
             spec.args.push_back(Glib::ustring("WebBrowser"));
 
             //replace %s character in search engine itegration
-            char buffer[G_ASCII_DTOSTR_BUF_SIZE];
+            char buffer[1024];
             sprintf(buffer, web_search.data(), search_type.text.data());
             spec.args.push_back(Glib::ustring(buffer));
         }
     }
+
+    if(verbose)
+        std::cout << "Calling launch process: " << spec.cmd << std::endl;
 
     //launch external process
     launch_process(spec.cmd, spec.args);
@@ -1034,10 +1062,10 @@ void on_search_text_change(){
                     p_search_entry->icon = "applications-other";
                 }
 
-                if(default_browser.compare(trim(p_entry->d_name)) == 0){
+                if(default_browser.compare(trim(p_entry->d_name)) == 0 && !default_browser_icon.size()){
                     default_browser_icon = p_search_entry->icon;
                     if(verbose)
-                        std::cout << "Default browser set to: " << p_search_entry->icon << std::endl;
+                        std::cout << "Default browser set to: " << p_search_entry->icon << ":" << std::endl;
                 }
 
                 //search name case insensitive
