@@ -780,9 +780,7 @@ void on_activate(){
             spec.args.push_back(Glib::ustring("WebBrowser"));
 
             //replace %s character in search engine itegration
-            char buffer[1024];
-            sprintf(buffer, web_search.data(), search_type.text.data());
-            spec.args.push_back(Glib::ustring(buffer));
+            spec.args.push_back(replace_all(web_search, "%s", search_type.text));
         }
     }
 
