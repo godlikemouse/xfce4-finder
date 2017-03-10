@@ -992,8 +992,18 @@ void on_search_text_change(){
 
                 //open desktop file
                 Glib::KeyFile file;
-                if(!file.load_from_file(filename)){
-                    std::cerr << "Error: Could not open application file " << filename << std::endl;
+                try{
+                    if(!file.load_from_file(filename)){
+                        std::cerr << "Error: Could not open application file " << filename << std::endl;
+
+                        //remove from stack
+                        matches.pop_back();
+                        continue;
+                    }
+                }
+                catch(const Glib::Error& ex){
+                    std::cerr << "Error: could not parse key file: " << filename << std::endl;
+                    std::cerr << ex.what() << std::endl;
 
                     //remove from stack
                     matches.pop_back();
@@ -1079,7 +1089,6 @@ void on_search_text_change(){
 
                 //add entry to registry
                 registry[ p_search_entry->name.data() ] = true;
-
             }
 
             closedir(p_directory);
@@ -1206,7 +1215,6 @@ void display_help(){
 
 int main(int argc, char ** argv){
 
-    trim("hello how are you? ");
     //get default web browser
     //use: xdg-settings get default-web-browser
     default_browser = passthru("xdg-settings get default-web-browser");
