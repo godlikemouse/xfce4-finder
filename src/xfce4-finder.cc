@@ -131,6 +131,7 @@ inline void load_channel_settings(){
 
         std::vector<Glib::ustring> default_directories = {
             "/usr/share/applications",
+            "/usr/share/applications/kde4",
             HOME_DIRECTORY + "/.local/share/applications"
         };
 
