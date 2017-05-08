@@ -1,3 +1,4 @@
+
 # xfce4-finder
 Smart and intuitive application finder, complete with theme and customization support.
 
@@ -15,7 +16,7 @@ Smart and intuitive application finder, complete with theme and customization su
 - Supports tab autocomplete for local application and filenames
 - Supports CONTROL_KEY + ENTER_KEY for domain name completion *(ie. google => www.google.com, google.com => www.google.com, www.google => www.google.com)*.
 
-## Customizable Settings
+## Customizable Settings <a name="customizable-settings"></a>
 Application settings can be controlled using xfconf-query.
 
 Available settings:
@@ -35,6 +36,12 @@ List a setting:
 Change a setting:
 
     xfconf-query -c xfce4-finder -p /web-search -s https://www.bing.com?q=%s
+
+Set array values:
+
+	xfconf-query -c xfce4-finder -p /application-directories -s /usr/share/applications -s /usr/local/share/applications
+
+The above sets the application-directories array property which is used by xfce4-finder to location application files to /usr/share/applications and /usr/local/share/applications.  You may need to update this setting if your applications directory is not included by default.
 
 ## Installation
 This application is available under the Arch Linux AUR repository as a [PKGBUILD](https://aur.archlinux.org/packages/xfce4-finder/).  To install using yaourt, use the following command:
@@ -85,6 +92,13 @@ Once the application is displayed, begin typing.  Execute commands with either t
 
 ## Features/Issues
 Feel free add feature requests or report issues: [Features/Issues](https://github.com/godlikemouse/xfce4-finder/issues).
+
+## Troubleshooting
+
+- The application won't run resulting the error: Error: Could not open directory /home/USER/.local/share/applications
+
+    * Update the application-directories setting using the Set array values example listed under [Customizable Settings](#customizable-settings).
+
 
 ## Community
 
