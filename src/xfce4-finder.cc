@@ -969,7 +969,7 @@ void on_search_text_change(){
             //iterate directories
             if( (p_directory = opendir(directory_text.data())) == NULL){
                 std::cerr << "Error: Could not open directory " << directory_text << std::endl;
-                return;
+                continue;
             }
 
             while( (p_entry = readdir(p_directory)) != NULL ){
