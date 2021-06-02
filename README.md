@@ -44,9 +44,9 @@ Set array values:
 The above sets the application-directories array property which is used by xfce4-finder to location application files to /usr/share/applications and /usr/local/share/applications.  You may need to update this setting if your applications directory is not included by default.
 
 ## Installation
-This application is available under the Arch Linux AUR repository as a [PKGBUILD](https://aur.archlinux.org/packages/xfce4-finder/).  To install using yaourt, use the following command:
+This application is available under the Arch Linux AUR repository as a [PKGBUILD](https://aur.archlinux.org/packages/xfce4-finder/).  To install using [yay](https://aur.archlinux.org/packages/yay/), use the following command:
 
-	yaourt xfce4-finder
+	yay xfce4-finder
 
 ## Building
 To build the application you will need to have the following dependencies installed.
